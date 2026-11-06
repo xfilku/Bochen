@@ -1,0 +1,3150 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Piekarnia API — kontrakt M0",
+    "version": "1.0.0",
+    "description": "Specyfikacja pierwszego wydania: ręczne zamówienia, kontrahenci, produkty, pieczenia i artykuły dodatkowe. To kontrakt do samodzielnej implementacji, nie działająca aplikacja. Reguły biznesowe i etapy M1/M2 opisano w docs/."
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8000"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "health"
+    },
+    {
+      "name": "customers"
+    },
+    {
+      "name": "products"
+    },
+    {
+      "name": "bakes"
+    },
+    {
+      "name": "orders"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "health",
+        "tags": [
+          "health"
+        ],
+        "summary": "Stan procesu API",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A01"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthRead"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/customers": {
+      "post": {
+        "operationId": "create_customer",
+        "tags": [
+          "customers"
+        ],
+        "summary": "create_customer",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A02",
+          "A03"
+        ],
+        "responses": {
+          "201": {
+            "description": "Utworzono",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konflikt z regułą biznesową lub stanem zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerCreate"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list_customers",
+        "tags": [
+          "customers"
+        ],
+        "summary": "list_customers",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A05"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageCustomerRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            }
+          },
+          {
+            "name": "is_active",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/customers/{customer_id}": {
+      "get": {
+        "operationId": "get_customer",
+        "tags": [
+          "customers"
+        ],
+        "summary": "get_customer",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A21"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nie znaleziono wskazanego zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "customer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "update_customer",
+        "tags": [
+          "customers"
+        ],
+        "summary": "update_customer",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A04"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nie znaleziono wskazanego zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konflikt z regułą biznesową lub stanem zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "customer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerUpdate"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/products": {
+      "post": {
+        "operationId": "create_product",
+        "tags": [
+          "products"
+        ],
+        "summary": "create_product",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A07"
+        ],
+        "responses": {
+          "201": {
+            "description": "Utworzono",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konflikt z regułą biznesową lub stanem zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductCreate"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list_products",
+        "tags": [
+          "products"
+        ],
+        "summary": "list_products",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A24"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageProductRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            }
+          },
+          {
+            "name": "is_active",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/products/{product_id}": {
+      "get": {
+        "operationId": "get_product",
+        "tags": [
+          "products"
+        ],
+        "summary": "get_product",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A21"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nie znaleziono wskazanego zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "update_product",
+        "tags": [
+          "products"
+        ],
+        "summary": "update_product",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A09"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nie znaleziono wskazanego zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konflikt z regułą biznesową lub stanem zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductUpdate"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/bakes": {
+      "post": {
+        "operationId": "create_bake",
+        "tags": [
+          "bakes"
+        ],
+        "summary": "create_bake",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A10"
+        ],
+        "responses": {
+          "201": {
+            "description": "Utworzono",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BakeRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konflikt z regułą biznesową lub stanem zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BakeCreate"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list_bakes",
+        "tags": [
+          "bakes"
+        ],
+        "summary": "list_bakes",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A24"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageBakeRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "draft",
+                "open",
+                "closed"
+              ]
+            }
+          },
+          {
+            "name": "date_from",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/bakes/{bake_id}": {
+      "get": {
+        "operationId": "get_bake",
+        "tags": [
+          "bakes"
+        ],
+        "summary": "get_bake",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A21"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BakeRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nie znaleziono wskazanego zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "bake_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "update_bake",
+        "tags": [
+          "bakes"
+        ],
+        "summary": "update_bake",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A10",
+          "A12"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BakeRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nie znaleziono wskazanego zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konflikt z regułą biznesową lub stanem zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "bake_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BakeUpdate"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/bakes/{bake_id}/products": {
+      "get": {
+        "operationId": "list_bake_products",
+        "tags": [
+          "bakes"
+        ],
+        "summary": "list_bake_products",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A11"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BakeProductRead"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nie znaleziono wskazanego zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "bake_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "add_bake_product",
+        "tags": [
+          "bakes"
+        ],
+        "summary": "Dodaj produkt katalogowy do oferty pieczenia",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A11"
+        ],
+        "responses": {
+          "201": {
+            "description": "Utworzono",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BakeProductRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nie znaleziono wskazanego zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konflikt z regułą biznesową lub stanem zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "bake_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BakeProductCreate"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/bakes/{bake_id}/products/{bake_product_id}": {
+      "delete": {
+        "operationId": "remove_bake_product",
+        "tags": [
+          "bakes"
+        ],
+        "summary": "remove_bake_product",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A11"
+        ],
+        "responses": {
+          "204": {
+            "description": "Usunięto pozycję oferty"
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nie znaleziono wskazanego zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konflikt z regułą biznesową lub stanem zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "bake_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "bake_product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/bakes/{bake_id}/open": {
+      "post": {
+        "operationId": "open_bake",
+        "tags": [
+          "bakes"
+        ],
+        "summary": "open_bake",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A12"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BakeRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nie znaleziono wskazanego zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konflikt z regułą biznesową lub stanem zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "bake_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/bakes/{bake_id}/close": {
+      "post": {
+        "operationId": "close_bake",
+        "tags": [
+          "bakes"
+        ],
+        "summary": "close_bake",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A12"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BakeRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nie znaleziono wskazanego zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konflikt z regułą biznesową lub stanem zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "bake_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/bakes/{bake_id}/summary": {
+      "get": {
+        "operationId": "get_bake_summary",
+        "tags": [
+          "bakes"
+        ],
+        "summary": "get_bake_summary",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A16",
+          "I05"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BakeSummary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nie znaleziono wskazanego zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "bake_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/orders": {
+      "post": {
+        "operationId": "create_order",
+        "tags": [
+          "orders"
+        ],
+        "summary": "create_order",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A13",
+          "A14",
+          "A15",
+          "A19"
+        ],
+        "responses": {
+          "201": {
+            "description": "Utworzono",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nie znaleziono wskazanego zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konflikt z regułą biznesową lub stanem zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderCreate"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list_orders",
+        "tags": [
+          "orders"
+        ],
+        "summary": "list_orders",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A24"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageOrderRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "customer_id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "bake_id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "draft",
+                "confirmed",
+                "cancelled"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/{order_id}": {
+      "get": {
+        "operationId": "get_order",
+        "tags": [
+          "orders"
+        ],
+        "summary": "get_order",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A21"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nie znaleziono wskazanego zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      },
+      "put": {
+        "operationId": "replace_order",
+        "tags": [
+          "orders"
+        ],
+        "summary": "replace_order",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A17",
+          "A20"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nie znaleziono wskazanego zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konflikt z regułą biznesową lub stanem zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderReplace"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{order_id}/confirm": {
+      "post": {
+        "operationId": "confirm_order",
+        "tags": [
+          "orders"
+        ],
+        "summary": "confirm_order",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A16",
+          "A20"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nie znaleziono wskazanego zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konflikt z regułą biznesową lub stanem zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/{order_id}/cancel": {
+      "post": {
+        "operationId": "cancel_order",
+        "tags": [
+          "orders"
+        ],
+        "summary": "cancel_order",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A18",
+          "A20"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nie znaleziono wskazanego zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konflikt z regułą biznesową lub stanem zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/orders/{order_id}/reopen": {
+      "post": {
+        "operationId": "reopen_order",
+        "tags": [
+          "orders"
+        ],
+        "summary": "reopen_order",
+        "x-release": "M0",
+        "x-test-ids": [
+          "A18"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brak lub niepoprawny klucz API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Nie znaleziono wskazanego zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konflikt z regułą biznesową lub stanem zasobu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Niepoprawne dane wejściowe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    },
+    "schemas": {
+      "DecimalString": {
+        "type": "string",
+        "pattern": "^(?:0|[1-9][0-9]{0,8})(?:\\.[0-9]{1,3})?$",
+        "not": {
+          "pattern": "^0(?:\\.0{1,3})?$"
+        },
+        "description": "Dodatnia liczba dziesiętna, do 9 cyfr całkowitych i 3 po przecinku. Bez float, wykładnika i przecinka.",
+        "examples": [
+          "10.000",
+          "0.500"
+        ]
+      },
+      "HealthRead": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "ok"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "additionalProperties": false
+      },
+      "ErrorDetail": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "field",
+          "message"
+        ],
+        "additionalProperties": false
+      },
+      "ErrorBody": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErrorDetail"
+            }
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "details"
+        ],
+        "additionalProperties": false
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorBody"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "additionalProperties": false
+      },
+      "CustomerCreate": {
+        "type": "object",
+        "properties": {
+          "display_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "phone": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "address": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "allow_extra_items": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "display_name",
+          "phone"
+        ],
+        "additionalProperties": false
+      },
+      "CustomerUpdate": {
+        "type": "object",
+        "properties": {
+          "display_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "phone": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "address": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "allow_extra_items": {
+            "type": "boolean"
+          },
+          "is_active": {
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "additionalProperties": false,
+        "minProperties": 1
+      },
+      "CustomerRead": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "display_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "phone": {
+            "type": "string",
+            "pattern": "^\\+[1-9][0-9]{7,14}$"
+          },
+          "address": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "allow_extra_items": {
+            "type": "boolean"
+          },
+          "is_active": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "display_name",
+          "phone",
+          "address",
+          "notes",
+          "allow_extra_items",
+          "is_active",
+          "created_at",
+          "updated_at"
+        ],
+        "additionalProperties": false
+      },
+      "ProductCreate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "unit": {
+            "type": "string",
+            "const": "piece",
+            "default": "piece"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "ProductUpdate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "is_active": {
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "additionalProperties": false,
+        "minProperties": 1
+      },
+      "ProductRead": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "unit": {
+            "type": "string",
+            "const": "piece"
+          },
+          "is_active": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "unit",
+          "is_active",
+          "created_at",
+          "updated_at"
+        ],
+        "additionalProperties": false
+      },
+      "BakeCreate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "bake_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "accepting_from": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "order_deadline": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "name",
+          "bake_date",
+          "accepting_from",
+          "order_deadline"
+        ],
+        "additionalProperties": false
+      },
+      "BakeUpdate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "bake_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "accepting_from": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "order_deadline": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [],
+        "additionalProperties": false,
+        "minProperties": 1
+      },
+      "BakeRead": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "code": {
+            "type": "string",
+            "pattern": "^P[1-9][0-9]*$",
+            "maxLength": 20
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "bake_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "accepting_from": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "order_deadline": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "open",
+              "closed"
+            ]
+          },
+          "opened_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "closed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name",
+          "bake_date",
+          "accepting_from",
+          "order_deadline",
+          "status",
+          "opened_at",
+          "closed_at",
+          "created_at",
+          "updated_at"
+        ],
+        "additionalProperties": false
+      },
+      "BakeProductCreate": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "product_id"
+        ],
+        "additionalProperties": false
+      },
+      "BakeProductRead": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "bake_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "product_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "product_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "unit": {
+            "type": "string",
+            "const": "piece"
+          }
+        },
+        "required": [
+          "id",
+          "bake_id",
+          "product_id",
+          "product_name",
+          "unit"
+        ],
+        "additionalProperties": false
+      },
+      "OrderItemInput": {
+        "type": "object",
+        "properties": {
+          "bake_product_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000000
+          }
+        },
+        "required": [
+          "bake_product_id",
+          "quantity"
+        ],
+        "additionalProperties": false
+      },
+      "OrderExtraItemInput": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "quantity": {
+            "$ref": "#/components/schemas/DecimalString"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "piece",
+              "kg",
+              "g"
+            ]
+          }
+        },
+        "required": [
+          "description",
+          "quantity",
+          "unit"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "unit": {
+                  "const": "piece"
+                }
+              },
+              "required": [
+                "unit"
+              ]
+            },
+            "then": {
+              "properties": {
+                "quantity": {
+                  "type": "string",
+                  "pattern": "^[0-9]+(?:\\.0{1,3})?$"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "OrderCreate": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "bake_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemInput"
+            },
+            "maxItems": 100,
+            "default": []
+          },
+          "extra_items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderExtraItemInput"
+            },
+            "maxItems": 100,
+            "default": []
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "customer_id",
+          "bake_id"
+        ],
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "items"
+            ],
+            "properties": {
+              "items": {
+                "minItems": 1
+              }
+            }
+          },
+          {
+            "required": [
+              "extra_items"
+            ],
+            "properties": {
+              "extra_items": {
+                "minItems": 1
+              }
+            }
+          }
+        ]
+      },
+      "OrderReplace": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemInput"
+            },
+            "maxItems": 100
+          },
+          "extra_items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderExtraItemInput"
+            },
+            "maxItems": 100
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "items",
+          "extra_items"
+        ],
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "items"
+            ],
+            "properties": {
+              "items": {
+                "minItems": 1
+              }
+            }
+          },
+          {
+            "required": [
+              "extra_items"
+            ],
+            "properties": {
+              "extra_items": {
+                "minItems": 1
+              }
+            }
+          }
+        ]
+      },
+      "OrderItemRead": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "bake_product_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "product_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "product_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "unit": {
+            "type": "string",
+            "const": "piece"
+          }
+        },
+        "required": [
+          "id",
+          "bake_product_id",
+          "product_id",
+          "product_name",
+          "quantity",
+          "unit"
+        ],
+        "additionalProperties": false
+      },
+      "OrderExtraItemRead": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "quantity": {
+            "$ref": "#/components/schemas/DecimalString"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "piece",
+              "kg",
+              "g"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "description",
+          "quantity",
+          "unit"
+        ],
+        "additionalProperties": false
+      },
+      "OrderRead": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "customer_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "customer_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "customer_phone": {
+            "type": "string",
+            "pattern": "^\\+[1-9][0-9]{7,14}$"
+          },
+          "bake_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "confirmed",
+              "cancelled"
+            ]
+          },
+          "source": {
+            "type": "string",
+            "const": "manual"
+          },
+          "submitted_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemRead"
+            }
+          },
+          "extra_items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderExtraItemRead"
+            }
+          },
+          "confirmed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "cancelled_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "customer_id",
+          "customer_name",
+          "customer_phone",
+          "bake_id",
+          "status",
+          "source",
+          "submitted_at",
+          "notes",
+          "items",
+          "extra_items",
+          "confirmed_at",
+          "cancelled_at",
+          "created_at",
+          "updated_at"
+        ],
+        "additionalProperties": false
+      },
+      "ProductionItem": {
+        "type": "object",
+        "properties": {
+          "bake_product_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "product_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "product_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "unit": {
+            "type": "string",
+            "const": "piece"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "bake_product_id",
+          "product_id",
+          "product_name",
+          "unit",
+          "quantity"
+        ],
+        "additionalProperties": false
+      },
+      "AdditionalItemSummary": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "customer_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "customer_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "quantity": {
+            "$ref": "#/components/schemas/DecimalString"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "piece",
+              "kg",
+              "g"
+            ]
+          }
+        },
+        "required": [
+          "order_id",
+          "customer_id",
+          "customer_name",
+          "description",
+          "quantity",
+          "unit"
+        ],
+        "additionalProperties": false
+      },
+      "BakeSummary": {
+        "type": "object",
+        "properties": {
+          "bake_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "confirmed_order_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "pending_order_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductionItem"
+            }
+          },
+          "additional_items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdditionalItemSummary"
+            }
+          },
+          "generated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "bake_id",
+          "confirmed_order_count",
+          "pending_order_count",
+          "products",
+          "additional_items",
+          "generated_at"
+        ],
+        "additionalProperties": false
+      },
+      "PageCustomerRead": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerRead"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "additionalProperties": false
+      },
+      "PageProductRead": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductRead"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "additionalProperties": false
+      },
+      "PageBakeRead": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BakeRead"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "additionalProperties": false
+      },
+      "PageOrderRead": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderRead"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
+}

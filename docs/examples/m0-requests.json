@@ -1,0 +1,97 @@
+[
+  {
+    "name": "customer_with_extras",
+    "schema": "CustomerCreate",
+    "value": {
+      "display_name": "Anna Kowalska",
+      "phone": "500 600 700",
+      "allow_extra_items": true
+    }
+  },
+  {
+    "name": "product",
+    "schema": "ProductCreate",
+    "value": {
+      "name": "Chleb pszenny",
+      "unit": "piece"
+    }
+  },
+  {
+    "name": "bake",
+    "schema": "BakeCreate",
+    "value": {
+      "name": "Piątkowe pieczenie",
+      "bake_date": "2030-11-22",
+      "accepting_from": "2030-11-18T09:00:00+01:00",
+      "order_deadline": "2030-11-21T18:00:00+01:00"
+    }
+  },
+  {
+    "name": "offer_item",
+    "schema": "BakeProductCreate",
+    "value": {
+      "product_id": 1
+    }
+  },
+  {
+    "name": "order_with_extras",
+    "schema": "OrderCreate",
+    "value": {
+      "customer_id": 1,
+      "bake_id": 1,
+      "items": [
+        {
+          "bake_product_id": 1,
+          "quantity": 2
+        }
+      ],
+      "extra_items": [
+        {
+          "description": "Ziemniaki",
+          "quantity": "10.000",
+          "unit": "kg"
+        }
+      ],
+      "notes": "Odbiór po 16:00"
+    }
+  },
+  {
+    "name": "replace_order",
+    "schema": "OrderReplace",
+    "value": {
+      "items": [
+        {
+          "bake_product_id": 1,
+          "quantity": 3
+        }
+      ],
+      "extra_items": [],
+      "notes": null
+    }
+  },
+  {
+    "name": "clear_note",
+    "schema": "CustomerUpdate",
+    "value": {
+      "notes": null
+    }
+  },
+  {
+    "name": "error",
+    "schema": "ErrorResponse",
+    "value": {
+      "error": {
+        "code": "ORDER_WINDOW_CLOSED",
+        "message": "Termin zapisów minął.",
+        "details": []
+      }
+    }
+  },
+  {
+    "name": "health",
+    "schema": "HealthRead",
+    "value": {
+      "status": "ok"
+    }
+  }
+]

@@ -1,0 +1,60 @@
+[
+  {
+    "id": "PC01",
+    "tests": [
+      "U05"
+    ],
+    "body": "P12 2 żytnie, bułki x4",
+    "expected": "Dwie pozycje: żytni 2, bułki 4; ręczne przyjęcie."
+  },
+  {
+    "id": "PC02",
+    "tests": [
+      "S09",
+      "U09"
+    ],
+    "body": "2 pszenne i 10 kg ziemniaków",
+    "expected": "Domyślny termin, pszenny 2 i kandydat dodatku; wymagane uprawnienie i ręczne przyjęcie."
+  },
+  {
+    "id": "PC03",
+    "tests": [
+      "S08",
+      "U07"
+    ],
+    "body": "P12 jednak nie chcę żytniego",
+    "expected_issue": "POSSIBLE_CHANGE_OR_NEGATION"
+  },
+  {
+    "id": "PC04",
+    "tests": [
+      "S10"
+    ],
+    "body": "Jak ostatnio, dziękuję",
+    "expected": "Brak automatycznych pozycji; UNKNOWN_FRAGMENT lub MISSING_QUANTITY."
+  },
+  {
+    "id": "PC05",
+    "tests": [
+      "U06"
+    ],
+    "body": "P12 2 pszenny 500 g",
+    "expected": "Przy aliasie „pszenny 500 g” ilość 2; 500 nie jest osobną ilością."
+  },
+  {
+    "id": "PC06",
+    "tests": [
+      "S07"
+    ],
+    "body": "P999 2 żytnie",
+    "expected_issue": "UNKNOWN_BAKE_CODE"
+  },
+  {
+    "id": "PC07",
+    "tests": [
+      "S04"
+    ],
+    "body": "P12 2 żytnie",
+    "expected": "Dwa różne identyfikatory transportowe -> dwie wiadomości; drugie zgłoszenie wymaga przeglądu istniejącego zamówienia."
+  }
+]

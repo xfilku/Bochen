@@ -2,7 +2,9 @@
 
 Dokumentacja opisuje aplikację, którą napiszesz samodzielnie z pomocą AI jako nauczyciela. W repozytorium nie ma gotowej implementacji API. Są wymagania, kontrakty, projekt danych, zadania i scenariusze testów.
 
-Zacznij od zadania **T01** w [planie implementacji](docs/06-plan-implementacji.md). Realizuj jedno zadanie naraz. Nie buduj jeszcze SMS-ów ani całej docelowej struktury katalogów.
+Przy pierwszym uruchomieniu zacznij od zadania **T01** w [planie implementacji](docs/06-plan-implementacji.md). Przy kolejnej sesji najpierw przeczytaj [bieżący etap i przekazanie pracy](docs/10-postep.md). Realizuj jedno zadanie naraz. Nie buduj jeszcze SMS-ów ani całej docelowej struktury katalogów.
+
+Mentor prowadzi Cię po jednym małym kroku: wyjaśnia cel, wskazuje konkretną czynność i oczekiwany wynik, a potem sprawdza Twoją próbę. Bieżący etap, wykonane sprawdzenia i dokładny następny krok zapisuje w `docs/10-postep.md` po istotnych krokach i przed zakończeniem odpowiedzi dotyczącej projektu. Kolejny agent zaczyna od tego pliku i weryfikuje go z kodem. Instrukcje dla agentów są w [AGENTS.md](AGENTS.md).
 
 | Dokument | Do czego służy |
 |---|---|
@@ -15,6 +17,7 @@ Zacznij od zadania **T01** w [planie implementacji](docs/06-plan-implementacji.m
 | [Specyfikacja testów](docs/07-testy.md) | Scenariusze, dane, oczekiwane wyniki i strategia |
 | [Praca z mentorem AI](docs/08-mentor.md) | Jak prosić o podpowiedzi i przegląd kodu |
 | [Decyzje i założenia](docs/09-decyzje.md) | Co uzgodniono, co zaproponowano, co można zmienić |
+| [Bieżący etap i przekazanie pracy](docs/10-postep.md) | Gdzie skończyliśmy, co sprawdzono i od czego ma zacząć kolejny agent |
 | [OpenAPI wydania M0](docs/contracts/openapi-m0.json) | Maszynowy kontrakt pierwszego działającego API |
 
 Wydania:
@@ -27,6 +30,21 @@ Wydania:
 Artykuły dodatkowe należą już do M0. Podział na wydania porządkuje naukę; nie usuwa ich z uzgodnionego MVP.
 
 Plik OpenAPI opisuje docelowy stan **M0**, a dokumenty opisowe także M1 i M2. Nie generuj z niego całej aplikacji. Korzystaj z niego do sprawdzania kolejno napisanych endpointów.
+
+## Uruchomienie bieżącej aplikacji
+
+Po wykonaniu T01 uruchom z głównego katalogu `BochenApp`:
+
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn src.Backend.main:app --reload
+```
+
+`src.Backend.main:app` wskazuje obiekt `app` w `src/Backend/main.py`. `--reload` uruchamia ponownie aplikację po zmianie kodu. Terminal pozostaje zajęty przez serwer; zatrzymasz go przez `Ctrl+C`.
+
+- [Sprawdzenie działania API](http://127.0.0.1:8000/health): oczekiwana odpowiedź `{"status":"ok"}` po dodaniu endpointu w T02.
+- [Interaktywna dokumentacja](http://127.0.0.1:8000/docs).
+
+## Weryfikacja dokumentacji
 
 Weryfikacja samej dokumentacji i kontraktu, bez instalowania bibliotek aplikacji:
 

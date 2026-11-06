@@ -19,7 +19,7 @@ Przy zadaniu zapisz status: do zrobienia / w trakcie / do sprawdzenia / ukończo
 
 - Zależności: T01.
 - Cel: żądanie, odpowiedź, status HTTP i uruchomienie testu.
-- Zrób: utwórz `app/main.py`, obiekt FastAPI i GET `/health`. Dodaj test przez TestClient, potem uruchom serwer lokalnie i sprawdź `/docs`.
+- Zrób: utwórz obiekt FastAPI i GET `/health` w pliku wejściowym aplikacji. W bieżącym układzie jest to istniejący `src/Backend/main.py`; `app/main.py` w przykładach architektury to plan docelowy. Dodaj test przez TestClient, potem uruchom serwer lokalnie i sprawdź `/docs`.
 - Kryterium: endpoint zwraca dokładnie `{"status":"ok"}` z 200, test działa bez uruchamiania osobnego serwera.
 - Testy: A01.
 - Wyjaśnij: dlaczego test klienta nie potrzebuje ręcznie uruchomionego Uvicorn?

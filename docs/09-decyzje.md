@@ -15,6 +15,7 @@
 | D09 | Rozpoznawanie po słownikach w MVP; LLM oraz konfigurowalne szablony/formuły później |
 | D10 | Użytkownik pisze aplikację sam, AI prowadzi i sprawdza; teraz powstaje specyfikacja, nie gotowy backend |
 | D11 | Najpierw małe API klientów, produktów i zamówień, potem kolejne funkcje |
+| D12 | 2026-11-06: AI prowadzi po jednym małym kroku i zapisuje bieżący etap w `docs/10-postep.md` po istotnych krokach oraz przed końcem odpowiedzi dotyczącej projektu. Zapis obejmuje także niedokończoną pracę, wyniki sprawdzeń i dokładny następny krok, aby inny agent mógł kontynuować |
 
 ## Propozycje przyjęte do pierwszego kontraktu
 

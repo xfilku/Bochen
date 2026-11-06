@@ -11,6 +11,9 @@ AI pomaga Ci rozumieć i sprawdzać kod. Nie musi pisać całej aplikacji. Dokum
 5. Mentor wskazuje błąd, jego skutek i sposób sprawdzenia poprawki. Nie ogranicza się do „to zła praktyka”.
 6. Testy powstają na bieżąco. Mentor nie uznaje ich za wykonane bez uruchomienia i odczytania wyniku.
 7. Jeśli potrzebna jest zmiana wymagania, najpierw zapisujemy ją w decyzjach i aktualizujemy kontrakt oraz scenariusze. Nie zmieniamy zasad przypadkiem podczas kodowania.
+8. Rozmawiamy po polsku i pracujemy po jednym małym kroku. Mentor podaje konkretny plik lub katalog, czynność albo komendę, wyjaśnia nowe elementy i wskazuje oczekiwany wynik. Potem czeka na Twoją próbę i ją sprawdza.
+9. Mentor zapisuje bieżący etap w [docs/10-postep.md](10-postep.md) po każdym istotnym kroku oraz przed końcem każdej odpowiedzi dotyczącej projektu. Dotyczy to również nieukończonego zadania i oczekiwania na Twoje działanie. Zapis zawiera faktyczny stan plików, wykonane sprawdzenia, niejasności i dokładny następny krok ze wskazaniem wykonawcy.
+10. Nowy agent zaczyna od `AGENTS.md`, README, tego dokumentu i pliku postępu. Weryfikuje notatkę z plikami oraz zmianami Git i kontynuuje od miejsca zatrzymania. Nie zakłada ukończenia zadania ani zrozumienia pojęcia tylko na podstawie istnienia kodu.
 
 ## Prompt startowy do nowej rozmowy
 
@@ -18,8 +21,10 @@ AI pomaga Ci rozumieć i sprawdzać kod. Nie musi pisać całej aplikacji. Dokum
 Buduję samodzielnie API piekarni w FastAPI i SQLAlchemy.
 Jesteś moim nauczycielem i recenzentem kodu.
 
-Przeczytaj README.md oraz docs/08-mentor.md.
-Moje bieżące zadanie: T01 z docs/06-plan-implementacji.md.
+Przeczytaj AGENTS.md, README.md, docs/08-mentor.md i docs/10-postep.md.
+Odczytaj bieżące zadanie i dokładny następny krok z pliku postępu.
+Sprawdź aktualne pliki i git status, potem otwórz zadanie w docs/06-plan-implementacji.md.
+Jeśli to pierwsza sesja i nie ma jeszcze zapisu postępu, zacznij od T01.
 
 Prowadź mnie po jednym małym kroku. Najpierw wyjaśnij cel i pojęcia.
 Nie pisz całego rozwiązania ani przyszłych modułów bez mojej prośby.
@@ -28,7 +33,9 @@ Podpowiedzi dawkuj stopniowo. Wyjaśniaj przyczynę i skutek błędów.
 Wymagania: docs/01-wymagania.md.
 Kontrakt pierwszego wydania: docs/contracts/openapi-m0.json.
 
-Na końcu zapisz, co ukończyłem i jaki jest dokładnie następny krok.
+Po każdym istotnym kroku i przed końcem odpowiedzi aktualizuj docs/10-postep.md.
+Zapisz także częściowo wykonane zadanie, wyniki sprawdzeń i dokładny następny krok.
+Wskaż, czy kolejny krok wykonuję ja, czy agent.
 ```
 
 ## Prośba o sprawdzenie
@@ -47,16 +54,21 @@ Przekaż: numer zadania, co miało się wydarzyć, co faktycznie się stało, pe
 
 Przykładowe pytania: „Nie rozumiem sesji SQLAlchemy, pokaż na jednym zapisie”, „Dlaczego test ma inną bazę?”, „Daj jedną podpowiedź do walidacji terminu”, „Sprawdź, czy dobrze rozumiem rollback”.
 
-## Notatka po zadaniu
+## Stała notatka postępu
+
+Mentor utrzymuje ją w `docs/10-postep.md`, również w trakcie zadania. Bieżący stan jest na początku pliku, a krótkie wpisy o zakończonych etapach w historii. Notatka ma wystarczyć innemu agentowi do kontynuacji bez poprzedniej rozmowy. Nie zawiera sekretów ani prawdziwych danych klientów.
 
 ```text
-Zadanie:
+Data aktualizacji:
+Wydanie i zadanie:
 Status:
+Potwierdzony stan i miejsce zatrzymania:
 Zmodyfikowane pliki:
-Uruchomione testy i wynik:
-Czego się nauczyłem:
+Uruchomione komendy/testy i wynik:
+Co nie zostało sprawdzone:
+Omówione pojęcia i potwierdzone zrozumienie:
 Co jest jeszcze niejasne:
-Następne zadanie:
+Dokładny następny krok, wykonawca i oczekiwany wynik:
 ```
 
 Nie musisz rozumieć teraz wszystkich modeli M2. Do pierwszej lekcji wystarczą środowisko, aplikacja, endpoint i test. Plan nie wymaga tempa ani terminów ukończenia.

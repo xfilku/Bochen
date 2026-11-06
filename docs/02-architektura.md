@@ -31,6 +31,8 @@ Pierwszy prosty odczyt można napisać w routerze. Serwisy wydzielamy, kiedy poj
 
 ## Docelowa struktura po M0
 
+Na etapie T02 pracujemy w istniejącym `src/Backend/main.py`. Poniższy katalog `app/` jest strukturą docelową; bieżące importy i komendy uruchamiania dopasowujemy do rzeczywistego położenia pliku. Nie przenosimy plików przed pierwszym endpointem.
+
 ```text
 app/
   main.py
